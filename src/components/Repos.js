@@ -7,29 +7,45 @@ const Repos = () => {
   const { repos } = React.useContext(GithubContext)
 
   let languages = repos.reduce((total, item) => {
-    const { language } = item
+    const { language, stargazers_count } = item
 
     if (!language) return total
 
     if (!total[language]) {
-      total[language] = { label: language, value: 1 }
+      total[language] = { label: language, value: 1, stars: stargazers_count }
     } else {
-      total[language] = { ...total[language], value: total[language].value + 1 }
+      total[language] = {
+        ...total[language],
+        value: total[language].value + 1,
+        stars: total[language].stars + stargazers_count,
+      }
     }
 
     return total
   }, {})
 
-  languages = Object.values(languages)
+  const mostUsed = Object.values(languages)
     .sort((a, b) => {
       return b.value - a.value
     })
     .slice(0, 5)
 
+  //most stars per language
+  const mostPopular = Object.values(languages)
+    .sort((a, b) => {
+      return b.stars - a.stars
+    })
+    .slice(0, 5)
+    .map((item) => {
+      return { ...item, value: item.stars }
+    })
+
   return (
     <section className='section'>
       <Wrapper className='section-center'>
-        <Pie3D data={languages} />
+        <Pie3D data={mostUsed} />
+        <div></div>
+        <Doughnut2D data={mostPopular} />
       </Wrapper>
     </section>
   )
@@ -47,7 +63,7 @@ const Wrapper = styled.div`
     grid-template-columns: 2fr 3fr;
   }
 
-  /* div {
+  div {
     width: 100% !important;
   }
   .fusioncharts-container {
@@ -56,7 +72,7 @@ const Wrapper = styled.div`
   svg {
     width: 100% !important;
     border-radius: var(--radius) !important;
-  } */
+  }
 `
 
 export default Repos
