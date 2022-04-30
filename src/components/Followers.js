@@ -3,7 +3,29 @@ import { GithubContext } from "../context/context"
 import styled from "styled-components"
 
 const Followers = () => {
-  return <Wrapper>followers component</Wrapper>
+  const { followers } = React.useContext(GithubContext)
+
+  return (
+    <Wrapper>
+      <div className='followers'>
+        {followers.map((item) => {
+          return <Follower key={item.id} {...item} />
+        })}
+      </div>
+    </Wrapper>
+  )
+}
+
+const Follower = ({ avatar_url, login, html_url }) => {
+  return (
+    <article>
+      <img src={avatar_url} alt={login} />
+      <div>
+        <h4>{login}</h4>
+        <a href={html_url}>{html_url}</a>
+      </div>
+    </article>
+  )
 }
 
 const Wrapper = styled.article`
