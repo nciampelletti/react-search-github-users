@@ -16,7 +16,7 @@ const Dashboard = () => {
       <User />
 
       {/* charts */}
-      {/* <Repos /> */}
+      <Repos />
     </main>
   )
 }
