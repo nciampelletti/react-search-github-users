@@ -8,8 +8,6 @@ const rootUrl = "https://api.github.com"
 
 const GithubContext = React.createContext()
 
-//we have access to Provider and Consumer
-
 const GitHubProvider = ({ children }) => {
   const [gitHubUser, setGitHubUser] = useState(mockUser)
   const [repos, setRepos] = useState(mockRepos)
@@ -29,6 +27,33 @@ const GitHubProvider = ({ children }) => {
 
     if (response) {
       setGitHubUser(response.data)
+
+      const { login, followers_url } = response.data
+
+      // //get repos
+      // axios(`${rootUrl}/users/${login}/repos?per_page=100`)
+      //   .then((response) => setRepos(response.data))
+      //   .catch((error) => console.log(error))
+
+      // //get followers
+      // axios(`${followers_url}?per_page=100`)
+      //   .then((response) => setFollowers(response.data))
+      //   .catch((error) => console.log(error))
+
+      await Promise.allSettled([
+        axios(`${rootUrl}/users/${login}/repos?per_page=100`),
+        axios(`${followers_url}?per_page=100`),
+      ])
+        .then((results) => {
+          const [repos, followers] = results
+          const status = "fullfilled"
+
+          if (repos.status === status && followers.status === status) {
+            setRepos(repos.value.data)
+            setFollowers(followers.value.data)
+          }
+        })
+        .catch((error) => console.log(error))
     } else {
       toggleError(true, "sorry, cant find a user. ")
     }
