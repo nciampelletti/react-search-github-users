@@ -30,16 +30,6 @@ const GitHubProvider = ({ children }) => {
 
       const { login, followers_url } = response.data
 
-      // //get repos
-      // axios(`${rootUrl}/users/${login}/repos?per_page=100`)
-      //   .then((response) => setRepos(response.data))
-      //   .catch((error) => console.log(error))
-
-      // //get followers
-      // axios(`${followers_url}?per_page=100`)
-      //   .then((response) => setFollowers(response.data))
-      //   .catch((error) => console.log(error))
-
       await Promise.allSettled([
         axios(`${rootUrl}/users/${login}/repos?per_page=100`),
         axios(`${followers_url}?per_page=100`),
